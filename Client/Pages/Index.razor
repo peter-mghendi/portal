@@ -1,7 +1,63 @@
 ﻿@page "/"
+@using Portal.Shared.Models
+@using Portal.Client.Services
+@inject LocationClient Client
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
-<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor!</MudText>
-<MudAlert Severity="Severity.Normal">You can find documentation and examples on our website here: <MudLink Href="https://mudblazor.com" Typo="Typo.body2" Color="Color.Inherit"><b>www.mudblazor.com</b></MudLink></MudAlert>
+<div class="d-flex flex-column align-center mb-8">
+    <MudText Typo="Typo.h2">@greeting, @name!</MudText>
+    <MudText Typo="Typo.h4" Class="mb-4">Welcome to your Portal.</MudText>
+
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudTextField  @bind-Value="query" Label="Search locations" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Primary" Class="mud-width-full" />
+    </MudContainer>
+</div>
+
+<MudGrid Spacing="2">
+    @foreach (var location in _locations)
+    {
+        <MudItem xs="12" sm="6" md="4" lg="3">
+            <MudPaper Class="mud-width-full pa-8">
+                <span class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Rounded.TouchApp" Class="me-2"/>
+                    <MudText Typo="Typo.h6">@location.Name</MudText>
+                </span>
+                <MudText Typo="Typo.subtitle1" Class="mb-4">@location.Address</MudText>
+
+                <MudText Typo="Typo.body1" Class="mb-6">@location.Description</MudText>
+
+                <div class="d-flex justify-end">
+                    <MudButton Link="@($"/{location.Slug}")"
+                               Target="_blank"
+                               Variant="Variant.Filled"
+                               EndIcon="@Icons.Rounded.ArrowRight"
+                               Color="Color.Primary">
+                        Go
+                    </MudButton>
+                </div>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>
+
+@code
+{
+    string query = string.Empty;
+    List<Location> _locations = new();
+
+    string greeting = DateTime.Now.Hour switch
+    {
+        >= 0 and <= 12 => "Good morning",
+        > 12 and <= 16 => "Good afternoon",
+        _ => "Good evening"
+    };
+
+    string name = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _locations = await Client.FetchLocationsAsync();
+        name = "Peter";
+    }
+}

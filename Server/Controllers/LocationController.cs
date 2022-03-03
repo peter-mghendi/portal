@@ -20,14 +20,7 @@ namespace Portal.Server.Controllers
 
         [HttpGet]
         public IEnumerable<Location> Get() => _locationService.Locations;
-
-        [HttpGet("{id:int}")]
-        public Location GetById(int id)
-        {
-            _logger.LogInformation("Id is {Id}", id);
-            return _locationService.FindLocationById(id);
-        }
-
+        
         [HttpGet("{slug}")]
         public Location GetBySlug(string slug) => _locationService.FindLocationBySlug(slug);
     }
