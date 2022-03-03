@@ -13,6 +13,6 @@ public class LocationClient
     public async Task<List<Location>> FetchLocationsAsync(CancellationToken cancellationToken = default) =>
         await _baseAddress.GetJsonAsync<List<Location>>(cancellationToken);
 
-    public async Task<Location> FetchLocationByIdAsync(string slug, CancellationToken cancellationToken = default) =>
+    public async Task<Location> FetchLocationBySlugAsync(string slug, CancellationToken cancellationToken = default) =>
         await _baseAddress.AppendPathSegment(slug).GetJsonAsync<Location>(cancellationToken);
 }

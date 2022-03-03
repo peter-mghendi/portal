@@ -1,0 +1,24 @@
+@page "/{slug}"
+@using Portal.Client.Services
+@inject LocationClient Client
+@inject NavigationManager Navigator
+
+<div class="d-flex flex-column align-center justify-center">
+    <MudText Typo="Typo.h2" Class="mb-4">Please wait.</MudText>
+    <MudText Typo="Typo.h4">Redirecting you to /@Slug...</MudText>
+</div>
+
+@code {
+    [Parameter]
+    public string? Slug { get; set; }
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Slug is not null)
+        {
+            var location = await Client.FetchLocationBySlugAsync(slug: Slug);
+            Navigator.NavigateTo(location.Address);
+        }
+    }
+}
