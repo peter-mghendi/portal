@@ -23,5 +23,13 @@ namespace Portal.Server.Controllers
         
         [HttpGet("{slug}")]
         public Location GetBySlug(string slug) => _locationService.FindLocationBySlug(slug);
+
+        [HttpPost]
+        public Location Create([FromBody] Location location)
+        {
+            location.Id = _locationService.Locations[^1].Id + 1;
+            _locationService.Locations.Add(location);
+            return location;
+        }
     }
 }

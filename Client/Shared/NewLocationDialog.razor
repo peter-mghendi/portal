@@ -1,0 +1,75 @@
+@using Microsoft.AspNetCore.Components
+@using Portal.Client.Services
+@using Portal.Shared.Models
+@inject LocationClient Client
+<MudDialog>
+    <DialogContent>
+        <MudForm @bind-IsValid="@valid">
+            <MudTextField @bind-Value="model.Name" Label="Name" Required="true" RequiredError="Location name is required!" 
+                          HelperTextOnFocus="true" HelperText="A simple, meaningful name for this location"/>
+            
+            <MudTextField @bind-Value="model.Slug" Label="Slug" Required="true" RequiredError="Location slug is required!" 
+                          Immediate="true" Validation="ValidateSlug" HelperTextOnFocus="true" HelperText="@SlugHelperText" />
+            
+            <MudTextField @bind-Value="model.Icon" Label="Icon URL" Validation="ValidateOptionalUrl" HelperTextOnFocus="true"
+                          HelperText="URL to an icon for this location"/>
+            
+            <MudTextField @bind-Value="model.Address" Label="Address" Required="true" RequiredError="Location address is required!"
+                          Validation="ValidateUrl" Placeholder="http://192.168.1.1:8000" HelperTextOnFocus="true"
+                          HelperText="URL to this location"/>
+            
+            <MudTextField @bind-Value="model.Description" Label="Description" HelperTextOnFocus="true" 
+                          HelperText="Write a brief description of this location." Lines="4" />
+        </MudForm>    
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="!valid">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+
+    bool valid;
+    Location model = new();
+
+    private string SlugHelperText => $"This location will be accessed at /{model.Slug}";
+    
+    private async Task<string?> ValidateSlug(string slug)
+    {
+        try
+        {
+            var response = await Client.FetchLocationBySlugAsync(slug);
+            return $"/{slug} is already in use!";
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    private string? ValidateOptionalUrl(string url) => string.IsNullOrWhiteSpace(url) ? null : ValidateUrl(url);
+
+    private string? ValidateUrl(string url)
+    {
+        const string errorMessage = "A valid URL is required!";
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            return errorMessage;
+        }
+
+        if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+        {
+            return errorMessage;
+        }
+
+        return null;
+    }
+    
+    
+    void Submit() => MudDialog.Close(DialogResult.Ok(model));
+    void Cancel() => MudDialog.Cancel();
+}

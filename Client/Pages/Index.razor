@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Portal.Shared.Models
 @using Portal.Client.Services
+@inject IDialogService DialogService
 @inject LocationClient Client
 
 <PageTitle>Home</PageTitle>
@@ -9,9 +10,14 @@
     <MudText Typo="Typo.h2">@greeting, @name!</MudText>
     <MudText Typo="Typo.h4" Class="mb-4">Welcome to your Portal.</MudText>
 
-    <MudContainer MaxWidth="MaxWidth.Medium">
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mb-4">
         <MudTextField  @bind-Value="query" Label="Search locations" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Primary" Class="mud-width-full" />
     </MudContainer>
+    
+    <div class="d-flex align-center justify-center mb-8">
+        <MudText Typo="Typo.subtitle1" Class="me-2">You currently have @_locations.Count saved Locations.</MudText>
+        <MudButton OnClick="OpenNewLocationDialog" Variant="Variant.Text" StartIcon="@Icons.Rounded.Add" Color="Color.Primary">Add Location</MudButton>
+    </div>
 </div>
 
 <MudGrid Spacing="2">
@@ -51,7 +57,7 @@
         >= 0 and <= 12 => "Good morning",
         > 12 and <= 16 => "Good afternoon",
         _ => "Good evening"
-    };
+        };
 
     string name = string.Empty;
 
@@ -59,5 +65,24 @@
     {
         _locations = await Client.FetchLocationsAsync();
         name = "Peter";
+    }
+
+    async Task OpenNewLocationDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            CloseButton = true,
+            FullWidth = true
+            // FullScreen = true
+        };
+        var result = await DialogService.Show<NewLocationDialog>("New Location", options).Result;
+
+        if (!result.Cancelled)
+        {
+            var location = await Client.CreateLocationAsync((Location) result.Data);
+            _locations.Add(location);
+            StateHasChanged();
+        }
     }
 }

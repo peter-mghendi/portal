@@ -10,6 +10,9 @@ public class LocationClient
     
     public LocationClient(string host) => _baseAddress = $"{host}api/locations";
 
+    public async Task<Location> CreateLocationAsync(Location location, CancellationToken cancellationToken = default) =>
+        await _baseAddress.PostJsonAsync(location, cancellationToken).ReceiveJson<Location>();
+
     public async Task<List<Location>> FetchLocationsAsync(CancellationToken cancellationToken = default) =>
         await _baseAddress.GetJsonAsync<List<Location>>(cancellationToken);
 

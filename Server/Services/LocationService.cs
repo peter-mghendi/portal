@@ -11,72 +11,72 @@ public class LocationService : ILocationService
         new()
         {
             Id = 1,
+            Name = "Jellyfin",
             Slug = "jellyfin",
             Icon = "",
-            Name = "Jellyfin",
             Address = "http://127.0.0.1:8096",
             Description = Description,
         },
         new()
         {
             Id = 2,
+            Name = "qBittorrent",
             Slug = "qbittorrent",
             Icon = "",
-            Name = "qBittorrent",
             Address = "http://127.0.0.1:8080",
             Description = Description,
         },
         new()
         {
             Id = 3,
+            Name = "Radarr",
             Slug = "radarr",
             Icon = "",
-            Name = "Radarr",
             Address = "http://127.0.0.1:7878",
             Description = Description,
         },
         new()
         {
             Id = 4,
+            Name = "Sonarr",
             Slug = "sonarr",
             Icon = "",
-            Name = "Sonarr",
             Address = "http://127.0.0.1:8989",
             Description = Description,
         },
         new()
         {
             Id = 5,
+            Name = "Lidarr",
             Slug = "lidarr",
             Icon = "",
-            Name = "Lidarr",
             Address = "http://127.0.0.1:8686",
             Description = Description,
         },
         new()
         {
             Id = 6,
+            Name = "Readarr",
             Slug = "readarr",
             Icon = "",
-            Name = "Readarr",
             Address = "http://127.0.0.1:8787",
             Description = Description,
         },
         new()
         {
             Id = 7,
+            Name = "Prowlarr",
             Slug = "prowlarr",
             Icon = "",
-            Name = "Prowlarr",
             Address = "http://127.0.0.1:9696",
             Description =  Description,
         },
         new()
         {
             Id = 8,
+            Name = "Ombi",
             Slug = "ombi",
             Icon = "",
-            Name = "Ombi",
             Address = "http://127.0.0.1:5000",
             Description = Description,
         }
