@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Portal.Server.Services;
-using Portal.Shared;
+using Microsoft.EntityFrameworkCore;
+using Portal.Server.Data;
 using Portal.Shared.Models;
 
 namespace Portal.Server.Controllers
@@ -9,26 +9,26 @@ namespace Portal.Server.Controllers
     [Route("api/locations")]
     public class LocationController : ControllerBase
     {
-        private readonly ILocationService _locationService;
+        private readonly PortalContext _context;
         private readonly ILogger<LocationController> _logger;
 
-        public LocationController(ILocationService locationService, ILogger<LocationController> logger)
+        public LocationController(ILogger<LocationController> logger, PortalContext context)
         {
-            _locationService = locationService;
+            _context = context;
             _logger = logger;
         }
 
         [HttpGet]
-        public IEnumerable<Location> Get() => _locationService.Locations;
-        
+        public async Task<IEnumerable<Location>> Get() => await _context.Locations.ToListAsync();
+
         [HttpGet("{slug}")]
-        public Location GetBySlug(string slug) => _locationService.FindLocationBySlug(slug);
+        public async Task<Location> GetBySlug(string slug) => await _context.Locations.SingleAsync(l => l.Slug == slug);
 
         [HttpPost]
-        public Location Create([FromBody] Location location)
+        public async Task<Location> Create([FromBody] Location location)
         {
-            location.Id = _locationService.Locations[^1].Id + 1;
-            _locationService.Locations.Add(location);
+            await _context.Locations.AddAsync(location);
+            await _context.SaveChangesAsync();
             return location;
         }
     }
