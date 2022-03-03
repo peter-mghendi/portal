@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
+using Portal.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<ILocationService, LocationService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
