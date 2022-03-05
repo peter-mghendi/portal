@@ -1,6 +1,4 @@
 @page "/{slug}"
-@using Portal.Client.Services
-@inject LocationClient Client
 @inject NavigationManager Navigator
 
 <div class="d-flex flex-column align-center justify-center">
@@ -12,13 +10,6 @@
     [Parameter]
     public string? Slug { get; set; }
     
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Slug is not null)
-        {
-            var location = await Client.FetchLocationBySlugAsync(slug: Slug);
-            Navigator.NavigateTo(location.Address);
-        }
-    }
+    // You exist to do one thing.
+    protected override void OnInitialized() => Navigator.NavigateTo(Navigator.Uri, forceLoad: true);
 }
